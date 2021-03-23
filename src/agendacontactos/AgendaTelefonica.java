@@ -1,5 +1,7 @@
 package agendacontactos;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 
 
 public class AgendaTelefonica {
@@ -7,7 +9,7 @@ public class AgendaTelefonica {
 	//propiedad lista con los contactos que se guardan en la agenda
 	private ArrayList<Contacto> agenda;
 	
-	//constructor �nico de la clase
+	//constructor ï¿½nico de la clase
 	public AgendaTelefonica (){
 		this.agenda = new ArrayList<Contacto>();
 	}
@@ -15,7 +17,7 @@ public class AgendaTelefonica {
 
 	
 	/**
-	 * M�todo para agregar un nuevo contacto al final de la lista -agenda
+	 * Mï¿½todo para agregar un nuevo contacto al final de la lista -agenda
 	 * Si ya existe otro contacto con el mismo nombre y apellidos, no lo agrega
 	 * @param c: objeto de la clase Contacto con el contacto a agregar
 	 * @return: true si se agerega correctamente, false en otro caso
@@ -39,13 +41,13 @@ public class AgendaTelefonica {
 	}
 	
 	/**
-	 * M�todo para agregar un nuevo contacto en una determinada posici�n de la agenda
+	 * Mï¿½todo para agregar un nuevo contacto en una determinada posiciï¿½n de la agenda
 	 * Si ya existe otro contacto con el mismo nombre y apellidos, no lo agrega
-	 * @param pos: posici�n en la que insertar en contacto 
+	 * @param pos: posiciï¿½n en la que insertar en contacto 
 	 * @param c: objeto de la clase Contacto con el contacto a agregar
 	 * @return: true si se agerega correctamente, y false en alguno de estos casos:
-	 *  	1- El contacto ya est� duplicado
-	 *  	2- La posici�n indicada no existe en la agenda
+	 *  	1- El contacto ya estï¿½ duplicado
+	 *  	2- La posiciï¿½n indicada no existe en la agenda
 	 */
 	public boolean agregarContacto (int pos, Contacto c){
 		try {
@@ -54,12 +56,12 @@ public class AgendaTelefonica {
 				// Si el contacto existe, lanzamos una excepcion
 				throw new IllegalArgumentException ("Esta persona ya existe en la agenda");
 			}
-			//en caso contrario, tratatamos de insertarlo en esa posici�n
+			//en caso contrario, tratatamos de insertarlo en esa posiciï¿½n
 			agenda.add(pos, c);
 			return true;
 		}
 		catch ( IndexOutOfBoundsException e){
-			System.out.println("La posici�n que has indicado no existe en la agenda");
+			System.out.println("La posiciï¿½n que has indicado no existe en la agenda");
 			return false;
 		}
 		catch ( IllegalArgumentException e){
@@ -71,30 +73,80 @@ public class AgendaTelefonica {
 	}
 	
 	/**
-	 * M�todo para obtener un listado de los contactos de la agenda, 
+	 * Mï¿½todo para obtener un listado de los contactos de la agenda, 
 	 */
 	public void listarAgenda(){
+		
 		
 		System.out.println("\n\t NOMBRE \t\t APELLIDOS \t\t TELEFONO");
 		System.out.println("------------------------------------------------------");
 		
-		for (Contacto persona: this.agenda) {
+		
+		for (Contacto persona: obtenerListaOrdenada()) {
 		
 			System.out.format("\n\t %s \t\t %s \t\t %s", persona.getNombre() ,
 					persona.getApellidos(),
 					persona.getTelefono());
 			
 		}
-	}//fin del m�todo
+	}//fin del mï¿½todo
+	
+    private static boolean esMayor (Contacto c1, Contacto c2){
+        
+        boolean resultado=false;
+        
+        if (c1.getApellidos().compareToIgnoreCase(c2.getApellidos())>0){
+            resultado = true;
+        } else if (c1.getApellidos().compareToIgnoreCase(c2.getApellidos())==0){
+            if (c1.getNombre().compareToIgnoreCase(c2.getNombre())>0){
+                resultado =true;
+            }
+        }
+        //en el resto de casos c1 NO es mayor que c2
+        return resultado;
+    }
+    
+    public Contacto[] obtenerListaOrdenada(){
+        
+        Contacto[] listaOrdenada= new Contacto[this.agenda.size()];
+        
+        this.agenda.toArray(listaOrdenada);
+        
+        //ordenamos por el algoritmo de inserci�n
+        
+        Contacto auxiliar;
+        boolean hayhueco;
+        
+        for (int i = 0; i < listaOrdenada.length; i++){
+                    
+             auxiliar = (Contacto)listaOrdenada[i];
+             int j = i-1;
+             hayhueco=false;
+             
+             while (j >=0 && !hayhueco){
+                 if (esMayor((Contacto)listaOrdenada[j] ,auxiliar)){
+                     listaOrdenada[j+1] = listaOrdenada[j];
+                     j--;
+                 } else
+                     hayhueco=true;
+            }
+            listaOrdenada[j+1] = auxiliar;
+        } //fin del bucle para
+        
+        return listaOrdenada;
+        
+    } //fin de la ordenación
+
+    
 	
 	
 	/**
-	 * M�todo para buscar un contacto en la agenda por nombre y apellidos
-	 * @param nom: CAdena con el nombre de b�squeda
-	 * @param ape: CAdena con los apellidos de b�squeda
-	 * @return: Posici�n de la lista (desde 0) donde se encuentra el contacto /-1 si no se encuentra
-	 * La b�squeda no diferencia entre may�sculas y min�sculas
-	 * El método es private para que se pueda llamar solamente desde la propia clase
+	 * Mï¿½todo para buscar un contacto en la agenda por nombre y apellidos
+	 * @param nom: CAdena con el nombre de bï¿½squeda
+	 * @param ape: CAdena con los apellidos de bï¿½squeda
+	 * @return: Posiciï¿½n de la lista (desde 0) donde se encuentra el contacto /-1 si no se encuentra
+	 * La bï¿½squeda no diferencia entre mayï¿½sculas y minï¿½sculas
+	 * El mÃ©todo es private para que se pueda llamar solamente desde la propia clase
 	 */
 	private int buscarContacto (String nom, String ape){
 		boolean encontrado =false; 
@@ -109,17 +161,17 @@ public class AgendaTelefonica {
 			else
 				i++;
 		} //fin del bucle while
-		//devolvemos la posición donde se encontró el contacto
+		//devolvemos la posiciÃ³n donde se encontrÃ³ el contacto
 		return encontrado ? i : -1;
 	}
 	
 	
 	/**
-	 * M�todo para buscar un contacto en la agenda por nombre y apellidos y devolver su tel�fono
-	 * @param nom: CAdena con el nombre de b�squeda
-	 * @param ape: CAdena con los apellidos de b�squeda
-	 * @return: Cadena con el tel�fono del contacto buscado, o "No Encontrado" si no se encuentra
-	 * La b�squeda no diferencia entre may�sculas y min�sculas
+	 * Mï¿½todo para buscar un contacto en la agenda por nombre y apellidos y devolver su telï¿½fono
+	 * @param nom: CAdena con el nombre de bï¿½squeda
+	 * @param ape: CAdena con los apellidos de bï¿½squeda
+	 * @return: Cadena con el telï¿½fono del contacto buscado, o "No Encontrado" si no se encuentra
+	 * La bï¿½squeda no diferencia entre mayï¿½sculas y minï¿½sculas
 	 */
 	public String localizarContacto (String nom, String ape){
 		int indice= buscarContacto (nom, ape);
@@ -132,9 +184,9 @@ public class AgendaTelefonica {
 	}
 		
 	/**
-	 * M�todo para buscar un contacto en la agenda por n�mero de tel�fono
-	 * @param tel : CAdena con el n�mero de tel�fono buscado
-	 * @return: Cadena con la combinaci�n de nombres y apellidos, o "No encontrado" si no se encuentra
+	 * Mï¿½todo para buscar un contacto en la agenda por nï¿½mero de telï¿½fono
+	 * @param tel : CAdena con el nï¿½mero de telï¿½fono buscado
+	 * @return: Cadena con la combinaciï¿½n de nombres y apellidos, o "No encontrado" si no se encuentra
 	
 	 */
 		
@@ -155,11 +207,11 @@ public class AgendaTelefonica {
 	}
 		
 		/**
-		 * M�todo para buscar un contacto en la agenda por nombre y apellidos y eliminarlo
-		 * @param nom: CAdena con el nombre de b�squeda
-		 * @param ape: CAdena con los apellidos de b�squeda
+		 * Mï¿½todo para buscar un contacto en la agenda por nombre y apellidos y eliminarlo
+		 * @param nom: CAdena con el nombre de bï¿½squeda
+		 * @param ape: CAdena con los apellidos de bï¿½squeda
 		 * @return: true si encuentra el contacto y lo elimina; False en otro caso
-		 * La b�squeda no diferencia entre may�sculas y min�sculas
+		 * La bï¿½squeda no diferencia entre mayï¿½sculas y minï¿½sculas
 		 */
 		public boolean eliminarContacto (String nom, String ape){
 			int indice= buscarContacto (nom, ape);
